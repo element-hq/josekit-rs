@@ -607,20 +607,21 @@ mod tests {
             EcdsaJwsAlgorithm::Es384,
             EcdsaJwsAlgorithm::Es512,
             EcdsaJwsAlgorithm::Es256k,
+            EcdsaJwsAlgorithm::BP256R1,
         ] {
             let private_key = load_file(match alg {
                 EcdsaJwsAlgorithm::Es256 => "jwk/EC_P-256_private.jwk",
                 EcdsaJwsAlgorithm::Es384 => "jwk/EC_P-384_private.jwk",
                 EcdsaJwsAlgorithm::Es512 => "jwk/EC_P-521_private.jwk",
                 EcdsaJwsAlgorithm::Es256k => "jwk/EC_secp256k1_private.jwk",
-                EcdsaJwsAlgorithm::BP256R1 => unreachable!(),
+                EcdsaJwsAlgorithm::BP256R1 => "jwk/EC_BP256R1_private.jwk",
             })?;
             let public_key = load_file(match alg {
                 EcdsaJwsAlgorithm::Es256 => "jwk/EC_P-256_public.jwk",
                 EcdsaJwsAlgorithm::Es384 => "jwk/EC_P-384_public.jwk",
                 EcdsaJwsAlgorithm::Es512 => "jwk/EC_P-521_public.jwk",
                 EcdsaJwsAlgorithm::Es256k => "jwk/EC_secp256k1_public.jwk",
-                EcdsaJwsAlgorithm::BP256R1 => unreachable!(),
+                EcdsaJwsAlgorithm::BP256R1 => "jwk/EC_BP256R1_public.jwk",
             })?;
 
             let signer = alg.signer_from_jwk(&Jwk::from_bytes(&private_key)?)?;
