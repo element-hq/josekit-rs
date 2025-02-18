@@ -488,13 +488,13 @@ mod tests {
 
     #[test]
     fn test_external_jwt_verify_with_ecdsa() -> Result<()> {
-        for alg in &[ES256, ES384, ES512, ES256K] {
+        for alg in &[ES256, ES384, ES512, ES256K, BP256R1] {
             let jwk = Jwk::from_bytes(&load_file(match alg {
                 ES256 => "jwk/EC_P-256_public.jwk",
                 ES384 => "jwk/EC_P-384_public.jwk",
                 ES512 => "jwk/EC_P-521_public.jwk",
                 ES256K => "jwk/EC_secp256k1_public.jwk",
-                BP256R1 => unreachable!(),
+                BP256R1 => "jwk/EC_BP256R1_public.jwk",
             })?)?;
             let verifier = alg.verifier_from_jwk(&jwk)?;
             let jwt_string = String::from_utf8(load_file(&format!("jwt/{}.jwt", alg.name()))?)?;

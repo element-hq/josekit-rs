@@ -213,6 +213,7 @@ impl EcdhEsJweAlgorithm {
                             "P-384" => EcCurve::P384,
                             "P-521" => EcCurve::P521,
                             "secp256k1" => EcCurve::Secp256k1,
+                            "BP256R1" => EcCurve::BP256R1,
                             val => bail!("EC key doesn't support the curve algorithm: {}", val),
                         };
                         let x = match jwk.parameter("x") {
