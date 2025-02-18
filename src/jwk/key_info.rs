@@ -266,7 +266,7 @@ impl KeyInfo {
                             Some("secp256k1") => Some(KeyAlg::Ec {
                                 curve: Some(EcCurve::Secp256k1),
                             }),
-                            Some("BP256R1") => Some(KeyAlg::Ec {
+                            Some("BP-256") => Some(KeyAlg::Ec {
                                 curve: Some(EcCurve::BP256R1),
                             }),
                             Some(_) => Some(KeyAlg::Ec { curve: None }),

@@ -152,7 +152,7 @@ impl Jwk {
                     }
                     match self.map.get("crv") {
                         Some(Value::String(val)) => match val.as_str() {
-                            "P-256" | "P-384" | "P-521" | "secp256k1" | "BP256R1" => {
+                            "P-256" | "P-384" | "P-521" | "secp256k1" | "BP-256" => {
                                 jwk.map
                                     .insert("crv".to_string(), Value::String(val.clone()));
                             }

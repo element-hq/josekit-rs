@@ -32,7 +32,7 @@ impl EcCurve {
             Self::P384 => "P-384",
             Self::P521 => "P-521",
             Self::Secp256k1 => "secp256k1",
-            Self::BP256R1 => "BP256R1",
+            Self::BP256R1 => "BP-256",
         }
     }
 
@@ -174,7 +174,7 @@ impl EcKeyPair {
                     "P-384" => EcCurve::P384,
                     "P-521" => EcCurve::P521,
                     "secp256k1" => EcCurve::Secp256k1,
-                    "BP256R1" => EcCurve::BP256R1,
+                    "BP-256" => EcCurve::BP256R1,
                     _ => bail!("A Unknown curve: {}", val),
                 },
                 Some(_) => bail!("A parameter crv must be a string."),
