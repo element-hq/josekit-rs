@@ -5,6 +5,7 @@ use std::ops::Deref;
 
 use anyhow::bail;
 use openssl::aes::{self, AesKey};
+use openssl::hash::MessageDigest;
 use openssl::pkcs5;
 
 use crate::jwe::{JweAlgorithm, JweContentEncryption, JweDecrypter, JweEncrypter, JweHeader};
@@ -288,7 +289,12 @@ impl JweEncrypter for Pbes2HmacAeskwJweEncrypter {
             salt.push(0);
             salt.extend_from_slice(&p2s);
 
-            let md = self.algorithm.hash_algorithm().message_digest();
+            let md = match &self.algorithm.hash_algorithm() {
+                HashAlgorithm::Sha1 => MessageDigest::sha1(),
+                HashAlgorithm::Sha256 => MessageDigest::sha256(),
+                HashAlgorithm::Sha384 => MessageDigest::sha384(),
+                HashAlgorithm::Sha512 => MessageDigest::sha512(),
+            };
             let mut derived_key = vec![0; self.algorithm.derived_key_len()];
             pkcs5::pbkdf2_hmac(&self.private_key, &salt, p2c, md, &mut derived_key)?;
 
@@ -398,7 +404,12 @@ impl JweDecrypter for Pbes2HmacAeskwJweDecrypter {
             salt.push(0);
             salt.extend_from_slice(&p2s);
 
-            let md = self.algorithm.hash_algorithm().message_digest();
+            let md = match &self.algorithm.hash_algorithm() {
+                HashAlgorithm::Sha1 => MessageDigest::sha1(),
+                HashAlgorithm::Sha256 => MessageDigest::sha256(),
+                HashAlgorithm::Sha384 => MessageDigest::sha384(),
+                HashAlgorithm::Sha512 => MessageDigest::sha512(),
+            };
             let mut derived_key = vec![0; self.algorithm.derived_key_len()];
             pkcs5::pbkdf2_hmac(&self.private_key, &salt, p2c, md, &mut derived_key)?;
 

@@ -21,15 +21,7 @@ pub enum AescbcHmacJweEncryption {
 }
 
 impl AescbcHmacJweEncryption {
-    fn cipher(&self) -> Cipher {
-        match self {
-            Self::A128cbcHs256 => Cipher::aes_128_cbc(),
-            Self::A192cbcHs384 => Cipher::aes_192_cbc(),
-            Self::A256cbcHs512 => Cipher::aes_256_cbc(),
-        }
-    }
-
-    fn calculate_tag(
+    fn calcurate_tag(
         &self,
         aad: &[u8],
         iv: Option<&[u8]>,
@@ -109,14 +101,17 @@ impl JweContentEncryption for AescbcHmacJweEncryption {
             let mac_key_len = expected_len / 2;
             let mac_key = &key[0..mac_key_len];
             let enc_key = &key[mac_key_len..];
-
-            let cipher = self.cipher();
+            let cipher = match self {
+                AescbcHmacJweEncryption::A128cbcHs256 => Cipher::aes_128_cbc(),
+                AescbcHmacJweEncryption::A192cbcHs384 => Cipher::aes_192_cbc(),
+                AescbcHmacJweEncryption::A256cbcHs512 => Cipher::aes_256_cbc(),
+            };
             let encrypted_message = symm::encrypt(cipher, enc_key, iv, message)?;
             Ok((encrypted_message, mac_key))
         })()
         .map_err(|err| JoseError::InvalidKeyFormat(err))?;
 
-        let tag = self.calculate_tag(aad, iv, &encrypted_message, mac_key)?;
+        let tag = self.calcurate_tag(aad, iv, &encrypted_message, mac_key)?;
 
         Ok((encrypted_message, Some(tag)))
     }
@@ -142,8 +137,11 @@ impl JweContentEncryption for AescbcHmacJweEncryption {
             let mac_key_len = expected_len / 2;
             let mac_key = &key[0..mac_key_len];
             let enc_key = &key[mac_key_len..];
-
-            let cipher = self.cipher();
+            let cipher = match self {
+                AescbcHmacJweEncryption::A128cbcHs256 => Cipher::aes_128_cbc(),
+                AescbcHmacJweEncryption::A192cbcHs384 => Cipher::aes_192_cbc(),
+                AescbcHmacJweEncryption::A256cbcHs512 => Cipher::aes_256_cbc(),
+            };
             let message = symm::decrypt(cipher, enc_key, iv, encrypted_message)?;
             Ok((message, mac_key))
         })()
@@ -155,7 +153,7 @@ impl JweContentEncryption for AescbcHmacJweEncryption {
                 None => bail!("A tag value is required."),
             };
 
-            let calc_tag = self.calculate_tag(aad, iv, &encrypted_message, mac_key)?;
+            let calc_tag = self.calcurate_tag(aad, iv, &encrypted_message, mac_key)?;
             if calc_tag.as_slice() != tag {
                 bail!("The tag doesn't match.");
             }
